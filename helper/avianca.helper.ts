@@ -186,7 +186,7 @@ export class AviancaHelper {
             await this.page.waitForSelector("#searchComponentDiv");
             await this.takeScreenshot("Avianca-home");
         } catch (error) {
-            console.log("Ocurrió un error durante la navegación");
+            console.log("Ocurrió un error durante la navegación: ", error);
             throw error;
         }
     }
