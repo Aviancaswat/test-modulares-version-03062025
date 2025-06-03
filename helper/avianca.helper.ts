@@ -115,7 +115,7 @@ export class AviancaHelper {
             await this.page?.addInitScript(() => {
                 // Eliminar webdriver property
                 Object.defineProperty(navigator, 'webdriver', {
-                    get: () => undefined,
+                    get: () => false,
                 });
 
                 // Eliminar automation flags
