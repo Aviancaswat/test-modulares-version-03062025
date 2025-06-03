@@ -59,27 +59,109 @@ export class AviancaHelper {
                 headless: true,
                 args: [
                     '--disable-http2',
-                    '--disable-blink-features=AutomationControlled',
                     '--enable-webgl',
                     '--use-gl=swiftshader',
-                    '--enable-accelerated-2d-canvas'
+                    '--no-sandbox',
+                    '--disable-setuid-sandbox',
+                    '--disable-dev-shm-usage',
+                    '--disable-accelerated-2d-canvas',
+                    '--disable-gpu',
+                    '--window-size=1280,720',
+                    '--disable-blink-features=AutomationControlled',
+                    '--disable-features=VizDisplayCompositor',
+                    '--disable-ipc-flooding-protection',
+                    '--disable-renderer-backgrounding',
+                    '--disable-backgrounding-occluded-windows',
+                    '--disable-field-trial-config',
+                    '--disable-back-forward-cache',
+                    '--enable-features=NetworkService,NetworkServiceLogging',
+                    '--disable-extensions',
+                    '--force-color-profile=srgb',
+                    '--metrics-recording-only',
+                    '--no-first-run',
+                    '--enable-automation=false',
+                    '--password-store=basic',
+                    '--use-mock-keychain'
                 ]
             });
 
             this.context = await this.browser?.newContext({
-                userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
                 viewport: { width: 1280, height: 720 },
                 locale: 'en-US',
                 timezoneId: 'America/New_York',
                 deviceScaleFactor: 1,
+                hasTouch: false,
+                isMobile: false,
+                javaScriptEnabled: true,
+                permissions: [],
+                extraHTTPHeaders: {
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                    'Accept-Language': 'en-US,en;q=0.5',
+                    'Accept-Encoding': 'gzip, deflate',
+                    'DNT': '1',
+                    'Connection': 'keep-alive',
+                    'Upgrade-Insecure-Requests': '1',
+                    'Sec-Fetch-Dest': 'document',
+                    'Sec-Fetch-Mode': 'navigate',
+                    'Sec-Fetch-Site': 'none',
+                    'Cache-Control': 'max-age=0'
+                }
             });
 
             this.page = await this.context?.newPage();
 
+            // Scripts más avanzados para evitar detección
             await this.page?.addInitScript(() => {
+                // Eliminar webdriver property
                 Object.defineProperty(navigator, 'webdriver', {
-                    get: () => false,
+                    get: () => undefined,
                 });
+
+                // Eliminar automation flags
+                delete (window as any).chrome.runtime.onConnect;
+                
+                // Mock chrome object
+                (window as any).chrome = {
+                    runtime: {},
+                    loadTimes: function() {
+                        return {
+                            commitLoadTime: Date.now() - Math.random() * 1000,
+                            finishDocumentLoadTime: Date.now() - Math.random() * 1000,
+                            finishLoadTime: Date.now() - Math.random() * 1000,
+                            firstPaintAfterLoadTime: Date.now() - Math.random() * 1000,
+                            firstPaintTime: Date.now() - Math.random() * 1000,
+                            navigationType: 'navigate',
+                            wasFetchedViaSpdy: false,
+                            wasNpnNegotiated: false
+                        };
+                    },
+                    csi: function() {
+                        return {
+                            startE: Date.now() - Math.random() * 1000,
+                            onloadT: Date.now() - Math.random() * 1000,
+                            pageT: Date.now() - Math.random() * 1000
+                        };
+                    }
+                };
+
+                // Override plugins
+                Object.defineProperty(navigator, 'plugins', {
+                    get: () => [1, 2, 3, 4, 5],
+                });
+
+                // Override languages
+                Object.defineProperty(navigator, 'languages', {
+                    get: () => ['en-US', 'en'],
+                });
+
+                // Override permissions
+                // const originalQuery = window.navigator.permissions.query;
+                // window.navigator.permissions.query = (parameters) => (
+                //     parameters.name === 'notifications' ?
+                //         Promise.resolve({ state: Notification.permission }) :
+                //         originalQuery(parameters)
+                // );
             });
 
             return this.page;
