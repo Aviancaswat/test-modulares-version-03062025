@@ -56,7 +56,7 @@ export class AviancaHelper {
 
             const { chromium } = require("playwright-extra");
             this.browser = await chromium.launch({
-                headless: false,
+                headless: true,
                 args: [
                     '--disable-blink-features=AutomationControlled',
                     '--enable-webgl',
