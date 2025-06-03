@@ -180,8 +180,8 @@ export class AviancaHelper {
 
         try {
             await this.page.goto('https://www.avianca.com/', {
-                waitUntil: "domcontentloaded",
-                timeout: 30000
+                waitUntil: "networkidle",
+                timeout: 45000
             });
             await this.page.waitForSelector("#searchComponentDiv");
             await this.takeScreenshot("Avianca-home");
