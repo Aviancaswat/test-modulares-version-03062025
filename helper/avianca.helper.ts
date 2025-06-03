@@ -58,6 +58,7 @@ export class AviancaHelper {
             this.browser = await chromium.launch({
                 headless: true,
                 args: [
+                    '--disable-http2',
                     '--disable-blink-features=AutomationControlled',
                     '--enable-webgl',
                     '--use-gl=swiftshader',
