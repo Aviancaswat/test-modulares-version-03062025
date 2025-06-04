@@ -2,8 +2,9 @@ import { expect, type Page } from "@playwright/test";
 import { MESSAGES_PLAYWRIGHT as m } from "../global.variables";
 import { PlaywrightHelper } from "../helper/playwright.helper";
 import { copys } from "../utils/data/copys";
+import { AviancaBase } from "../classes/flows.abstract";
 
-export class HomeAvianca {
+export class HomeAvianca implements AviancaBase {
     private page: Page | undefined | any;
     private playwrightHelper: PlaywrightHelper;
 
@@ -11,7 +12,7 @@ export class HomeAvianca {
         this.page = page;
         this.playwrightHelper = new PlaywrightHelper(page);
     }
-
+   
     private async verifyCookies(): Promise<void> {
 
         if (!this.page) {
@@ -151,7 +152,7 @@ export class HomeAvianca {
         }
     }
 
-    public async doTests(): Promise<void> {
+    public async run(): Promise<void> {
         await this.verifyCookies();
         await this.selectOriginOption()
         await this.selectReturnOption();
