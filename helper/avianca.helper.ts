@@ -1,6 +1,7 @@
 import type { Browser, BrowserContext, Page, TestInfo } from "@playwright/test";
 import { copys } from "../utils/data/copys";
 import type { Lang } from "../types/copys.type";
+import configGlobal from "../global.variables";
 
 export class AviancaHelper {
 
@@ -56,7 +57,7 @@ export class AviancaHelper {
 
             const { chromium } = require("playwright-extra");
             this.browser = await chromium.launch({
-                headless: true,
+                headless: configGlobal.headless,
                 args: [
                     '--disable-http2',
                     '--enable-webgl',
@@ -111,20 +112,16 @@ export class AviancaHelper {
 
             this.page = await this.context?.newPage();
 
-            // Scripts más avanzados para evitar detección
             await this.page?.addInitScript(() => {
-                // Eliminar webdriver property
                 Object.defineProperty(navigator, 'webdriver', {
                     get: () => false,
                 });
 
-                // Eliminar automation flags
                 delete (window as any).chrome.runtime.onConnect;
-                
-                // Mock chrome object
+
                 (window as any).chrome = {
                     runtime: {},
-                    loadTimes: function() {
+                    loadTimes: function () {
                         return {
                             commitLoadTime: Date.now() - Math.random() * 1000,
                             finishDocumentLoadTime: Date.now() - Math.random() * 1000,
@@ -136,7 +133,7 @@ export class AviancaHelper {
                             wasNpnNegotiated: false
                         };
                     },
-                    csi: function() {
+                    csi: function () {
                         return {
                             startE: Date.now() - Math.random() * 1000,
                             onloadT: Date.now() - Math.random() * 1000,
@@ -145,23 +142,13 @@ export class AviancaHelper {
                     }
                 };
 
-                // Override plugins
                 Object.defineProperty(navigator, 'plugins', {
                     get: () => [1, 2, 3, 4, 5],
                 });
 
-                // Override languages
                 Object.defineProperty(navigator, 'languages', {
                     get: () => ['en-US', 'en'],
                 });
-
-                // Override permissions
-                // const originalQuery = window.navigator.permissions.query;
-                // window.navigator.permissions.query = (parameters) => (
-                //     parameters.name === 'notifications' ?
-                //         Promise.resolve({ state: Notification.permission }) :
-                //         originalQuery(parameters)
-                // );
             });
 
             return this.page;
