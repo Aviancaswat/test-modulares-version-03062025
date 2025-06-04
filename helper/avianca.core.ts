@@ -1,63 +1,27 @@
-import type { Browser, BrowserContext, Page, TestInfo } from "@playwright/test";
-import { copys } from "../utils/data/copys";
-import type { Lang } from "../types/copys.type";
-import configGlobal from "../global.variables";
+import type { Browser, BrowserContext, Page } from "@playwright/test";
+import { GLOBAL_PLAYWRIGHT as g, MESSAGES_PLAYWRIGHT as m} from "../global.variables";
+import { PlaywrightHelper } from "./playwright.helper";
 
-export class AviancaHelper {
+export class AviancaCore {
 
     private page: Page | undefined;
     private browser: Browser | undefined;
     private context: BrowserContext | undefined;
-    private screenshotCounter: number;
+    private playwrightHelper: PlaywrightHelper;
 
     constructor() {
         this.page = undefined;
         this.browser = undefined;
         this.context = undefined;
-        this.screenshotCounter = 0;
-    }
-
-    public getTimestamp() {
-        const now = new Date();
-        const pad = (n: number) => n.toString().padStart(2, '0');
-        const dd = pad(now.getDate());
-        const mm = pad(now.getMonth() + 1);
-        const yyyy = now.getFullYear();
-        const hh = pad(now.getHours());
-        const mi = pad(now.getMinutes());
-        const ss = pad(now.getSeconds());
-        return `fecha-${dd}-${mm}-${yyyy}_hora-${hh}-${mi}-${ss}`;
-    }
-
-    public async takeScreenshot(label: string) {
-        if (!this.page) {
-            throw new Error("El navegador no ha sido inicializado. Llama al método 'initializeBrowser'");
-        }
-
-        try {
-            const timestamp = this.getTimestamp();
-            const filename = `step${this.screenshotCounter++}-${label}-${timestamp}.png`;
-            await this.page.screenshot({
-                path: `test-results/${filename}-${Date.now()}.png`,
-                fullPage: true
-            });
-
-        } catch (error) {
-            console.error("Ocurrió un error al tomar la captura");
-            throw error;
-        }
-    };
-
-    public getLang(): Lang {
-        return copys.getLang();
     }
 
     public async initializeBrowser() {
+
         try {
 
             const { chromium } = require("playwright-extra");
             this.browser = await chromium.launch({
-                headless: configGlobal.headless,
+                headless: g.headless,
                 args: [
                     '--disable-http2',
                     '--enable-webgl',
@@ -151,6 +115,10 @@ export class AviancaHelper {
                 });
             });
 
+            if (this.page) {
+                this.playwrightHelper = new PlaywrightHelper(this.page);
+            }
+
             return this.page;
         }
         catch (error) {
@@ -162,16 +130,16 @@ export class AviancaHelper {
     public async navigationTo() {
 
         if (!this.page) {
-            throw new Error("El navegador no ha sido inicializado. Llama al método 'initializeBrowser'");
+            throw new Error(m.errors.initializated);
         }
 
         try {
             await this.page.goto('https://www.avianca.com/', {
-                waitUntil: "networkidle",
-                timeout: 45000
+                waitUntil: "domcontentloaded",
+                timeout: 60000
             });
             await this.page.waitForSelector("#searchComponentDiv");
-            await this.takeScreenshot("Avianca-home");
+            await this.playwrightHelper.takeScreenshot("Avianca-home");
         } catch (error) {
             console.log("Ocurrió un error durante la navegación: ", error);
             throw error;

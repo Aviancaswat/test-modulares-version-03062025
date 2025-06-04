@@ -1,20 +1,27 @@
 import { test } from '@playwright/test';
-import { AviancaHelper } from '../helper/avianca.helper';
+import { AviancaCore } from '../helper/avianca.core';
+import { HomeAvianca } from '../flows/home.flow';
 
 test.describe('End to End in Avianca', () => {
 
-    let aviancaHelper: AviancaHelper;
+    let aviancaCore: AviancaCore;
+    let homeAvianca: HomeAvianca;
 
     test.beforeEach(async () => {
-        aviancaHelper = new AviancaHelper();
-        await aviancaHelper.initializeBrowser();
+        aviancaCore = new AviancaCore();
+        await aviancaCore.initializeBrowser();
+        const page = aviancaCore.getPage();
+        if (page) {
+            homeAvianca = new HomeAvianca(page);
+        }
     });
 
     test.afterEach(async () => {
-        await aviancaHelper.closeBrowser();
+        await aviancaCore.closeBrowser();
     });
 
     test('Home => Payments', async ({ }) => {
-        await aviancaHelper.navigationTo();
+        await aviancaCore.navigationTo();
+        await homeAvianca.doTests();
     });
 });
