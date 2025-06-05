@@ -1,9 +1,9 @@
 import { expect, type Page } from "@playwright/test";
 import { PlaywrightHelper } from "../helper/playwright.helper";
 import { MESSAGES_PLAYWRIGHT as m } from "../global.variables";
-import { AviancaBase } from "../classes/flows.abstract";
+import { PageBase } from "../classes/page.abstract";
 
-export class FlightsAvianca implements AviancaBase {
+export class FlightsAvianca implements PageBase {
     private page: Page | undefined | any;
     private playwrightHelper: PlaywrightHelper;
 
@@ -12,7 +12,7 @@ export class FlightsAvianca implements AviancaBase {
         this.playwrightHelper = new PlaywrightHelper(page);
     }
 
-    private async selectFlightOutbound() {
+    private async selectFlightOutbound(): Promise<void> {
         if (!this.page) {
             throw new Error(m.errors.initializated);
         }
@@ -32,7 +32,7 @@ export class FlightsAvianca implements AviancaBase {
         }
     }
 
-    private async selectFlightReturn() {
+    private async selectFlightReturn(): Promise<void> {
 
         if (!this.page) {
             throw new Error(m.errors.initializated);
@@ -53,7 +53,7 @@ export class FlightsAvianca implements AviancaBase {
         }
     }
 
-    private async validateModalFlight() {
+    private async validateModalFlight(): Promise<void> {
 
         if (!this.page) {
             throw new Error(m.errors.initializated);
@@ -73,7 +73,7 @@ export class FlightsAvianca implements AviancaBase {
         }
     }
 
-    private async continueToPassenger() {
+    private async continueToPassenger(): Promise<void> {
 
         if (!this.page) {
             throw new Error(m.errors.initializated);
@@ -94,7 +94,7 @@ export class FlightsAvianca implements AviancaBase {
         }
     }
 
-    public async run() {
+    public async run(): Promise<void> {
         await this.selectFlightOutbound();
         await this.validateModalFlight();
         await this.selectFlightReturn();

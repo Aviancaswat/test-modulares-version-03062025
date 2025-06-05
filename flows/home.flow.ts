@@ -2,9 +2,9 @@ import { expect, type Page } from "@playwright/test";
 import { MESSAGES_PLAYWRIGHT as m } from "../global.variables";
 import { PlaywrightHelper } from "../helper/playwright.helper";
 import { copys } from "../utils/data/copys";
-import { AviancaBase } from "../classes/flows.abstract";
+import { PageBase } from "../classes/page.abstract";
 
-export class HomeAvianca implements AviancaBase {
+export class HomeAvianca implements PageBase {
     private page: Page | undefined | any;
     private playwrightHelper: PlaywrightHelper;
 
@@ -36,7 +36,6 @@ export class HomeAvianca implements AviancaBase {
         try {
 
             const lang = this.playwrightHelper.getLang();
-
             await expect(this.page.locator('.content-wrap')).toBeVisible();
             await this.page.waitForSelector("#originBtn");
             await expect(this.page.locator('#originBtn')).toBeVisible();

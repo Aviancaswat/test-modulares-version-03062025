@@ -1,3 +1,3 @@
-export abstract class AviancaBase {
+export abstract class PageBase {
     public abstract run(): Promise<void>;
 }

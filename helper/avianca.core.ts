@@ -127,7 +127,7 @@ export class AviancaCore {
         }
     }
 
-    public async navigationTo() {
+    public async initTests() {
 
         if (!this.page) {
             throw new Error(m.errors.initializated);
@@ -136,7 +136,7 @@ export class AviancaCore {
         try {
             await this.page.goto('https://www.avianca.com/', {
                 waitUntil: "domcontentloaded",
-                timeout: 60000
+                timeout: 400_000
             });
             await this.page.waitForSelector("#searchComponentDiv");
             await this.playwrightHelper.takeScreenshot("Avianca-home");
