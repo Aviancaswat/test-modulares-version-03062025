@@ -1,5 +1,5 @@
 const GLOBAL_PLAYWRIGHT = {
-    headless: true
+    headless: false
 }
 
 const MESSAGES_PLAYWRIGHT = {

@@ -1,5 +1,5 @@
 import type { Browser, BrowserContext, Page } from "@playwright/test";
-import { GLOBAL_PLAYWRIGHT as g, MESSAGES_PLAYWRIGHT as m} from "../global.variables";
+import { GLOBAL_PLAYWRIGHT as g, MESSAGES_PLAYWRIGHT as m } from "../global.variables";
 import { PlaywrightHelper } from "./playwright.helper";
 
 export class AviancaCore {

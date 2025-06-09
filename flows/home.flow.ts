@@ -153,7 +153,7 @@ export class HomeAvianca implements PageBase {
 
     public async run(): Promise<void> {
         await this.verifyCookies();
-        await this.selectOriginOption()
+        await this.selectOriginOption();
         await this.selectReturnOption();
         await this.selectDepartureDate();
         await this.selectReturnDate();

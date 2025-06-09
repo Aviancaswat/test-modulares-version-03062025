@@ -1,11 +1,13 @@
 import { test } from '@playwright/test';
 import { AviancaCore } from '../helper/avianca.core';
-import { HomeAvianca } from '../flows/home.flow';
-import { FlightsAvianca } from '../flows/flights.flow';
-import { PassengerAvianca } from '../flows/passenger.flow';
-import { ServicesAvianca } from '../flows/services.flow';
-import { SeatsAvianca } from '../flows/seat.flows';
-import { PaymentAvianca } from '../flows/payment.flow';
+import { 
+    HomeAvianca, 
+    FlightsAvianca, 
+    PassengerAvianca, 
+    ServicesAvianca, 
+    SeatsAvianca, 
+    PaymentAvianca 
+} from "../flows/index";
 
 test.describe('End to End in Avianca', () => {
 
@@ -15,7 +17,7 @@ test.describe('End to End in Avianca', () => {
     let passengerAvianca: PassengerAvianca | null;
     let servicesAvianca: ServicesAvianca | null;
     let seatAvianca: SeatsAvianca | null;
-    let paymentAvianca: PaymentAvianca | null;
+    // let paymentAvianca: PaymentAvianca | null;
 
     test.beforeEach(async () => {
         aviancaCore = new AviancaCore();
